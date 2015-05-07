@@ -78,9 +78,10 @@ namespace IR3
             CalculateDocumentsVector2();
         }
 
-        public Corpus(string[] savefilepath)
+        public Corpus(string stopfilepath,string[] savefilepath)
         {
             this.savefilepath = savefilepath;
+            stoplist = new Document(stopfilepath);
             Document vectorspacedoc = new Document(savefilepath[2]);
             vectorspace = new SortedDictionary<string, int>(vectorspacedoc.wordlist);
             idfvector = ReadVectorInBin(savefilepath[1]);
@@ -92,6 +93,8 @@ namespace IR3
                 documents.Add(fi.Name, new Document(fi));
                 if (count % 100 == 0)
                     Console.WriteLine(count.ToString() +" documents processed.");
+                //if (count > 10000)
+                //    break;
             }
         }
 
@@ -186,12 +189,12 @@ namespace IR3
         //    }
         //    CreateMasterDictionarySinglePass();
         //    CalculateDocumentsVector();
-        //}
 
         private SortedDictionary<string, int> ReadSignificantWord(string[] significantwordpaths)
         {
             SortedDictionary<string, int> res = new SortedDictionary<string, int>();
             foreach (string significantwordpath in significantwordpaths)
+        //}
             {
                 StreamReader sr = new StreamReader(significantwordpath);
                 while (!sr.EndOfStream)
@@ -382,5 +385,11 @@ namespace IR3
             return result.ToList();
         }
 
+        public Document ProcessQuery(string queryname, string querycontent)
+        {
+            Document query = new Document(queryname, querycontent, stoplist, vectorspace);
+            query.vector = CalculateVector(query, vectorspace);
+            return query;
+        }
     }
 }

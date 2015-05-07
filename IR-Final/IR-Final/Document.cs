@@ -113,56 +113,6 @@ namespace IR3
             
         }
 
-        public Document(string abstractContent, SortedDictionary<string, int> vectorspace = null)
-        {
-            int docnamepos = abstractContent.IndexOf(".U");
-            int datapos = abstractContent.IndexOf(".W");
-            if (docnamepos >= 0 && datapos >= 0)
-            {
-                int enddocnamepos = abstractContent.IndexOf('.', docnamepos + 1);
-                int enddatapos = abstractContent.IndexOf(".A", datapos + 1);
-                string data = "";
-                if (enddocnamepos >= 0)
-                {
-                    docname = PreprocessWord(abstractContent.Substring(docnamepos + 2, enddocnamepos - docnamepos - 2));
-                    category = docname;
-                }
-                if (enddatapos >= 0)
-                    data = abstractContent.Substring(datapos + 2, enddatapos - datapos - 2);
-                if (data.Length > 0)
-                {
-                    char[] splitchar = new char[11];
-                    splitchar[0] = ' ';
-                    splitchar[1] = '\n';
-                    splitchar[2] = '\t';
-                    splitchar[3] = '.';
-                    splitchar[4] = '-';
-                    splitchar[5] = '/';
-                    splitchar[6] = '_';
-                    splitchar[7] = '(';
-                    splitchar[8] = ')';
-                    splitchar[9] = '[';
-                    splitchar[10] = ']';
-
-                    string[] rawlist = data.Split(splitchar,StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < rawlist.Length; ++i)
-                        rawlist[i] = PreprocessWord(rawlist[i]);
-                    //wordnumber = 0;
-                    for (int i = 0; i < rawlist.Length; ++i)
-                        if ((vectorspace==null && rawlist[i].Length>0) || (vectorspace!=null && vectorspace.ContainsKey(rawlist[i])))
-                        {
-                            //wordnumber++;
-                            if (wordlist.ContainsKey(rawlist[i]))
-                                wordlist[rawlist[i]] += 1;
-                            else wordlist.Add(rawlist[i], 1);
-                        }
-                }
-            }
-        }
-
-        
-
-        
         private string[] SplitWord(string content)
         {
             char[] splitchar = new char[33];

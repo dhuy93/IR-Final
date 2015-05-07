@@ -23,7 +23,7 @@ namespace IR3
         public static string baseDirectoryName = "IR-Final";
         
 
-        public static void Main()
+        public static void Main1()
         {
             //Set directory for source file
             string exepath = AppDomain.CurrentDomain.BaseDirectory;
@@ -42,10 +42,18 @@ namespace IR3
             //Corpus sample = new Corpus(dirpath, stoppath, savefilepath);//, significantwordfile);
 
             // Mode 2: Search
-            Corpus sample = new Corpus(savefilepath);
+            Corpus sample = new Corpus(stoppath, savefilepath);
             //OutputDictionary(sample.MasterDictionary, sample, "wordfrequency.txt");
             //OutputDictionary(sample.vectorspace, "SignificantWordAsVectorSpace.txt");
+            string queryStr = Console.ReadLine();
+            Document queryDoc = sample.ProcessQuery("", queryStr);
 
+            // Search for relevant documents
+            List<Document> results = sample.SearchRelevantDocuments(queryDoc);
+            foreach (Document doc in results)
+            {
+                Console.WriteLine(doc.docname);
+            }
         }
 
         private static SortedDictionary<string, int> QuerySignificantWord(List<Document> queries)
